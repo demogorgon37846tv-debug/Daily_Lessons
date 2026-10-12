@@ -1,0 +1,2271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Lesson Checklist – Grade V LUGATIMAN</title>
+    <style>
+        /* ─── RESET & BASE ─── */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f4f7fb;
+            padding: 24px;
+            color: #1e2b3c;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            padding: 30px 28px 40px;
+        }
+
+        /* ─── HEADER ─── */
+        .header {
+            border-bottom: 3px solid #2c3e50;
+            padding-bottom: 18px;
+            margin-bottom: 28px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #0b1a2a;
+        }
+        .header h1 small {
+            font-weight: 400;
+            font-size: 18px;
+            color: #3a5a7a;
+            margin-left: 12px;
+        }
+        .header .teacher {
+            font-size: 17px;
+            background: #e9edf4;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1f3a57;
+        }
+
+        /* ─── TABS ─── */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 28px;
+            border-bottom: 2px solid #dde3ec;
+            padding-bottom: 4px;
+        }
+        .tab-btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 30px 30px 0 0;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            background: #eef2f7;
+            color: #2f4058;
+            transition: 0.2s;
+            letter-spacing: 0.3px;
+        }
+        .tab-btn:hover {
+            background: #d7e0eb;
+        }
+        .tab-btn.active {
+            background: #1f2e44;
+            color: #fff;
+        }
+        .tab-btn.monday.active {
+            background: #1a3a6b;
+        }
+        .tab-btn.tuesday.active {
+            background: #a1313a;
+        }
+        .tab-btn.wednesday.active {
+            background: #2a6b47;
+        }
+        .tab-btn.thursday.active {
+            background: #b17d2b;
+        }
+        .tab-btn.friday.active {
+            background: #6d3b7a;
+        }
+
+        /* ─── DAY PANELS ─── */
+        .day-panel {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+        .day-panel.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            0% {
+                opacity: 0.5;
+                transform: translateY(6px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .day-panel h2 {
+            font-size: 22px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .day-panel h2 .badge {
+            font-size: 14px;
+            font-weight: 400;
+            background: #e2e8f0;
+            padding: 2px 16px;
+            border-radius: 30px;
+            color: #1f3a57;
+        }
+
+        /* ─── TABLE ─── */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            margin-top: 4px;
+        }
+        .schedule-table th {
+            text-align: left;
+            padding: 10px 8px 6px 8px;
+            font-weight: 600;
+            color: #1f3a57;
+            border-bottom: 2px solid #cfdae8;
+            background: #f8faff;
+        }
+        .schedule-table td {
+            padding: 7px 8px;
+            border-bottom: 1px solid #e4eaf2;
+            vertical-align: middle;
+        }
+        .schedule-table tr:last-child td {
+            border-bottom: none;
+        }
+        .schedule-table .subject-cell {
+            font-weight: 500;
+            color: #0b1f33;
+            white-space: nowrap;
+            min-width: 130px;
+            cursor: pointer;
+            transition: background 0.15s ease, border-radius 0.15s ease;
+        }
+        .schedule-table .subject-cell:hover {
+            background: #f5f9ff;
+            border-radius: 6px;
+        }
+        .schedule-table .subject-cell.break {
+            color: #6a7d94;
+            font-weight: 400;
+            font-style: italic;
+        }
+        .subject-select {
+            width: 100%;
+            min-width: 138px;
+            padding: 9px 10px;
+            border: 1px solid var(--field-border, #ded2e2);
+            border-radius: 10px;
+            color: var(--ink, #302b3a);
+            background: var(--field-bg, #fffefe);
+            font: inherit;
+            cursor: pointer;
+        }
+        .subject-select:focus-visible {
+            border-color: var(--accent, #84658f);
+            outline: none;
+            box-shadow: 0 0 0 4px var(--focus-ring, rgba(132, 101, 143, 0.18));
+        }
+        .schedule-table .input-cell {
+            width: 100%;
+            vertical-align: top;
+        }
+        .table-scroll {
+            overflow-x: auto;
+            margin-top: 8px;
+            border-radius: 14px;
+        }
+        .schedule-table {
+            min-width: 780px;
+            table-layout: fixed;
+        }
+        .schedule-table th:first-child,
+        .schedule-table td.check-cell {
+            width: 44px;
+        }
+        .schedule-table th:nth-child(2),
+        .schedule-table td.subject-cell {
+            width: 27%;
+        }
+        .lesson-fields {
+            display: grid;
+            grid-template-columns: minmax(70px, 0.55fr) minmax(75px, 0.6fr) minmax(150px, 1.3fr) minmax(150px, 1.2fr);
+            gap: 8px;
+            min-width: 0;
+        }
+        .lesson-field {
+            display: grid;
+            gap: 5px;
+            min-width: 0;
+            color: var(--muted, #766d80);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .lesson-field-preview {
+            display: block;
+            padding: 7px 9px;
+            border-left: 3px solid var(--accent, #84658f);
+            border-radius: 0 7px 7px 0;
+            background: var(--soft-accent, #f5f0f7);
+            color: var(--ink, #302b3a);
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: normal;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+            text-transform: none;
+            white-space: normal;
+        }
+        .lesson-field-preview:empty {
+            display: none;
+        }
+        .schedule-table input[type="text"] {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ccd7e6;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fbfdff;
+            transition: 0.15s;
+            font-family: inherit;
+        }
+        .lesson-field input,
+        .lesson-field textarea,
+        .lesson-field select {
+            width: 100%;
+            min-height: 42px;
+            padding: 9px 10px;
+            border: 1px solid var(--field-border, #ded2e2);
+            border-radius: 10px;
+            color: var(--ink, #302b3a);
+            background: var(--field-bg, #fffefe);
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.4;
+            letter-spacing: normal;
+            text-transform: none;
+            resize: vertical;
+        }
+        .lesson-field textarea {
+            min-height: 42px;
+            font-family: inherit;
+        }
+        .lesson-field select {
+            cursor: pointer;
+        }
+        .lesson-field input:focus,
+        .lesson-field textarea:focus,
+        .lesson-field select:focus {
+            border-color: var(--accent, #84658f);
+            outline: none;
+            box-shadow: 0 0 0 4px var(--focus-ring, rgba(132, 101, 143, 0.18));
+        }
+        .break-placeholder {
+            color: var(--muted, #766d80);
+            font-size: 13px;
+            font-style: italic;
+        }
+        .schedule-table input[type="text"]:focus {
+            border-color: #2d5f8b;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(45, 95, 139, 0.15);
+            background: #fff;
+        }
+        .schedule-table input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #1f3a57;
+            cursor: pointer;
+            transform: scale(1.05);
+        }
+        .schedule-table .check-cell {
+            text-align: center;
+            width: 50px;
+        }
+
+        /* notes */
+        .notes-area {
+            margin-top: 22px;
+            padding-top: 16px;
+            border-top: 2px dashed #d0dcec;
+        }
+        .notes-area label {
+            font-weight: 600;
+            font-size: 15px;
+            color: #1f3a57;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .notes-area textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ccd7e6;
+            border-radius: 10px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 52px;
+            font-family: inherit;
+            background: #fafcff;
+        }
+        .notes-area textarea:focus {
+            border-color: #2d5f8b;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(45, 95, 139, 0.12);
+        }
+
+        /* ─── WEEKLY SUMMARY ─── */
+        .summary-section {
+            margin-top: 48px;
+            padding-top: 28px;
+            border-top: 3px solid #dde3ec;
+        }
+        .summary-section h3 {
+            font-size: 20px;
+            margin-bottom: 14px;
+            color: #0b1a2a;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px 12px;
+            background: #f8faff;
+            padding: 16px 20px;
+            border-radius: 16px;
+            border: 1px solid #e2eaf5;
+        }
+        .summary-grid .subject-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            padding: 3px 0;
+            border-bottom: 1px solid #edf2f9;
+        }
+        .summary-grid .subject-row .subj {
+            font-weight: 500;
+        }
+        .summary-grid .subject-row .days {
+            color: #1f3a57;
+            font-weight: 600;
+        }
+        .summary-grid .subject-row .days span {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+        }
+        .summary-grid .subject-row .days .check-mark {
+            color: #1d7a3e;
+        }
+        .summary-grid .subject-row .days .scheduled {
+            color: #5a7eb0;
+        }
+        .summary-grid .subject-row .days .dash {
+            color: #a0b4cc;
+        }
+        .summary-overview {
+            display: grid;
+            gap: 14px;
+        }
+        .summary-day-card {
+            background: #f8faff;
+            border: 1px solid #e2eaf5;
+            border-radius: 16px;
+            padding: 16px 18px;
+        }
+        .summary-day-card h4 {
+            font-size: 16px;
+            color: #0b1a2a;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        .summary-day-card h4 span {
+            font-size: 13px;
+            font-weight: 600;
+            color: #51708f;
+            background: #edf4fb;
+            padding: 3px 10px;
+            border-radius: 999px;
+        }
+        .summary-list {
+            display: grid;
+            gap: 6px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 7px 0;
+            border-bottom: 1px solid #edf2f9;
+        }
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+        .summary-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .status-badge.done {
+            background: #e7f7ed;
+            color: #1d7a3e;
+        }
+        .status-badge.pending {
+            background: #eef3f8;
+            color: #5f7692;
+        }
+        .summary-subject {
+            font-weight: 600;
+            color: #1f3a57;
+        }
+        .summary-detail {
+            font-size: 13px;
+            color: #5f7692;
+            margin-top: 2px;
+            word-break: break-word;
+        }
+        .summary-notes {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #d8e2ee;
+            font-size: 13px;
+            color: #5f7692;
+            white-space: pre-wrap;
+        }
+
+        /* ─── TOOLBAR ─── */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 18px;
+        }
+        .toolbar button {
+            padding: 8px 22px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            background: #e9edf4;
+            color: #1f3a57;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .toolbar button:hover {
+            background: #d3deec;
+        }
+        .toolbar button.print-btn {
+            background: #1f3a57;
+            color: #fff;
+        }
+        .toolbar button.print-btn:hover {
+            background: #112b42;
+        }
+        .toolbar button.generate-btn {
+            background: #3d7656;
+            color: #fff;
+        }
+        .toolbar button.generate-btn:hover {
+            background: #2e6044;
+        }
+        .daily-export-control {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            border: 1px solid var(--field-border, #ded2e2);
+            border-radius: 999px;
+            background: var(--field-bg, #fffefe);
+            color: var(--ink, #302b3a);
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .daily-export-control select {
+            border: 0;
+            outline: 0;
+            color: inherit;
+            background: transparent;
+            font: inherit;
+            cursor: pointer;
+        }
+        .toolbar button.clear-btn {
+            background: #f0e6e6;
+            color: #7a3a3a;
+        }
+        .toolbar button.clear-btn:hover {
+            background: #e6d4d4;
+        }
+        .save-status {
+            font-size: 13px;
+            color: #3f6482;
+            background: #f1f6fb;
+            border: 1px solid #d8e4ef;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        /* ─── POLISHED LAYOUT & THEME PALETTES ─── */
+        :root {
+            color-scheme: light;
+            --page-bg: #f7f2f6;
+            --surface: #fffdfd;
+            --surface-soft: #fbf7fb;
+            --ink: #302b3a;
+            --muted: #766d80;
+            --accent: #84658f;
+            --accent-strong: #684c75;
+            --accent-soft: #f1eaf4;
+            --line: #e9e0eb;
+            --field-bg: #fffefe;
+            --field-border: #ded2e2;
+            --focus-ring: rgba(132, 101, 143, 0.18);
+            --success: #397358;
+        }
+        html[data-theme="sage"] {
+            --page-bg: #f1f6f1;
+            --surface: #fcfefb;
+            --surface-soft: #f6faf5;
+            --ink: #28372f;
+            --muted: #687a6e;
+            --accent: #63856d;
+            --accent-strong: #466c52;
+            --accent-soft: #e9f2ea;
+            --line: #dce8dd;
+            --field-bg: #fefffd;
+            --field-border: #cdddcf;
+            --focus-ring: rgba(99, 133, 109, 0.18);
+            --success: #397358;
+        }
+        html[data-theme="ocean"] {
+            --page-bg: #eff5f8;
+            --surface: #fcfeff;
+            --surface-soft: #f4f9fc;
+            --ink: #273442;
+            --muted: #66798a;
+            --accent: #5b829d;
+            --accent-strong: #3e6885;
+            --accent-soft: #e7f1f7;
+            --line: #d8e5ed;
+            --field-bg: #feffff;
+            --field-border: #cbdce7;
+            --focus-ring: rgba(91, 130, 157, 0.18);
+            --success: #397358;
+        }
+        html[data-theme="sunshine"] {
+            --page-bg: #faf6ed;
+            --surface: #fffefa;
+            --surface-soft: #fcf9f0;
+            --ink: #3b3427;
+            --muted: #81745c;
+            --accent: #a2834e;
+            --accent-strong: #826639;
+            --accent-soft: #f6efdf;
+            --line: #eee4cf;
+            --field-bg: #fffefa;
+            --field-border: #e6d9bb;
+            --focus-ring: rgba(162, 131, 78, 0.2);
+            --success: #547650;
+        }
+        body {
+            min-height: 100vh;
+            padding: clamp(14px, 3vw, 36px);
+            color: var(--ink);
+            background:
+                radial-gradient(ellipse at 8% 0%, var(--accent-soft), transparent 35%),
+                var(--page-bg);
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .container {
+            max-width: 1160px;
+            padding: clamp(20px, 4vw, 42px);
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            box-shadow: 0 22px 60px rgba(54, 39, 61, 0.09);
+        }
+        .header {
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 22px;
+            margin-bottom: 24px;
+        }
+        .header h1 {
+            color: var(--ink);
+            font-size: clamp(23px, 3vw, 30px);
+            letter-spacing: -0.7px;
+        }
+        .header h1 small {
+            color: var(--accent-strong);
+        }
+        .header .teacher {
+            color: var(--accent-strong);
+            background: var(--accent-soft);
+            padding: 9px 16px;
+        }
+        .tabs {
+            gap: 8px;
+            border: 0;
+            margin-bottom: 24px;
+        }
+        .tab-btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: var(--surface-soft);
+            color: var(--muted);
+        }
+        .tab-btn:hover {
+            background: var(--accent-soft);
+            color: var(--accent-strong);
+        }
+        .tab-btn.active,
+        .tab-btn.monday.active,
+        .tab-btn.tuesday.active,
+        .tab-btn.wednesday.active,
+        .tab-btn.thursday.active,
+        .tab-btn.friday.active {
+            background: var(--accent-strong);
+            color: #fff;
+            box-shadow: 0 5px 14px var(--focus-ring);
+        }
+        .day-panel h2 {
+            color: var(--ink);
+            font-size: 23px;
+            margin-bottom: 10px;
+        }
+        .day-panel h2 .badge {
+            color: var(--accent-strong);
+            background: var(--accent-soft);
+            padding: 5px 12px;
+        }
+        .schedule-table {
+            border-collapse: separate;
+            border-spacing: 0 8px;
+            margin-top: 8px;
+        }
+        .table-scroll .schedule-table {
+            margin-top: 0;
+        }
+        .schedule-table th {
+            padding: 9px 12px;
+            color: var(--muted);
+            border: 0;
+            background: transparent;
+            font-size: 12px;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+        }
+        .schedule-table th:first-child {
+            width: 52px;
+        }
+        .schedule-table th:nth-child(2) {
+            width: 30%;
+        }
+        .schedule-table td {
+            padding: 10px 12px;
+            background: var(--surface-soft);
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            vertical-align: middle;
+        }
+        .schedule-table td:first-child {
+            border-left: 1px solid var(--line);
+            border-radius: 13px 0 0 13px;
+        }
+        .schedule-table td:last-child {
+            border-right: 1px solid var(--line);
+            border-radius: 0 13px 13px 0;
+        }
+        .schedule-table tr:last-child td {
+            border-bottom: 1px solid var(--line);
+        }
+        .schedule-table .subject-cell {
+            min-width: 150px;
+            white-space: normal;
+            color: var(--ink);
+        }
+        .schedule-table .subject-cell:hover,
+        .schedule-table .subject-cell:focus-visible {
+            background: var(--accent-soft);
+            outline: 2px solid var(--accent);
+            outline-offset: -2px;
+            border-radius: 8px;
+        }
+        .schedule-table .subject-cell.break {
+            color: var(--muted);
+        }
+        .schedule-table .subject-cell {
+            min-width: 180px;
+        }
+        .subject-select {
+            min-width: 155px;
+        }
+        .schedule-table input[type="text"] {
+            min-height: 42px;
+            padding: 9px 12px;
+            color: var(--ink);
+            border: 1px solid var(--field-border);
+            border-radius: 10px;
+            background: var(--field-bg);
+            font-size: 14px;
+        }
+        .schedule-table input[type="text"]::placeholder,
+        .notes-area textarea::placeholder {
+            color: #9a91a0;
+        }
+        .schedule-table input[type="text"]:focus,
+        .notes-area textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--focus-ring);
+            background: var(--surface);
+        }
+        .schedule-table input[type="checkbox"] {
+            width: 21px;
+            height: 21px;
+            accent-color: var(--accent-strong);
+        }
+        .notes-area {
+            margin-top: 18px;
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--surface-soft);
+        }
+        .notes-area label {
+            color: var(--accent-strong);
+            margin-bottom: 8px;
+        }
+        .notes-area textarea {
+            min-height: 78px;
+            padding: 12px 14px;
+            color: var(--ink);
+            border: 1px solid var(--field-border);
+            border-radius: 11px;
+            background: var(--field-bg);
+            line-height: 1.5;
+        }
+        .summary-section {
+            border-color: var(--line);
+        }
+        .summary-section h3 {
+            color: var(--ink);
+        }
+        .summary-grid,
+        .summary-day-card {
+            background: var(--surface-soft);
+            border-color: var(--line);
+        }
+        .summary-grid .subject-row {
+            border-color: var(--line);
+        }
+        .summary-grid .subject-row .days,
+        .summary-subject {
+            color: var(--accent-strong);
+        }
+        .summary-day-card h4 {
+            color: var(--ink);
+        }
+        .summary-day-card h4 span,
+        .status-badge.pending {
+            color: var(--accent-strong);
+            background: var(--accent-soft);
+        }
+        .summary-detail,
+        .summary-notes {
+            color: var(--muted);
+        }
+        .toolbar {
+            align-items: center;
+            padding-top: 18px;
+            border-top: 1px solid var(--line);
+        }
+        .toolbar button,
+        .save-status,
+        .theme-control select {
+            min-height: 42px;
+            padding: 9px 16px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 650;
+        }
+        .toolbar button {
+            background: var(--surface-soft);
+            color: var(--ink);
+        }
+        .toolbar button:hover {
+            background: var(--accent-soft);
+        }
+        .toolbar button.print-btn {
+            background: var(--accent-strong);
+            color: #fff;
+        }
+        .toolbar button.print-btn:hover {
+            filter: brightness(0.92);
+        }
+        .toolbar button.clear-btn {
+            background: #fbf1f0;
+            color: #875552;
+        }
+        .save-status {
+            display: inline-flex;
+            align-items: center;
+            color: var(--success);
+            background: var(--surface-soft);
+        }
+        .theme-control select {
+            color: var(--accent-strong);
+            background: var(--accent-soft);
+            cursor: pointer;
+        }
+        .theme-control select:focus-visible,
+        .toolbar button:focus-visible,
+        .tab-btn:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* ─── PRINT STYLES ─── */
+        @media print {
+            body {
+                background: #fff;
+                padding: 0.3in;
+            }
+            .container {
+                box-shadow: none;
+                padding: 10px 0;
+                border-radius: 0;
+            }
+            .tab-btn {
+                display: none;
+            }
+            .day-panel {
+                display: block !important;
+                page-break-inside: avoid;
+                margin-bottom: 32px;
+            }
+            .day-panel:not(:last-child) {
+                border-bottom: 2px dashed #ccc;
+                padding-bottom: 28px;
+            }
+            .schedule-table input[type="text"] {
+                border: 1px solid #aaa;
+                background: #fff !important;
+            }
+            .schedule-table input[type="checkbox"] {
+                accent-color: #000;
+            }
+            .toolbar {
+                display: none;
+            }
+            .header .teacher {
+                background: #eee;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .summary-grid {
+                border: 1px solid #aaa;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .tabs {
+                display: none;
+            }
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 700px) {
+            .container {
+                padding: 18px 14px 24px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .header h1 {
+                font-size: 21px;
+            }
+            .header h1 small {
+                display: block;
+                margin-left: 0;
+                font-size: 16px;
+            }
+            .schedule-table .subject-cell {
+                min-width: 100px;
+                font-size: 13px;
+            }
+            .schedule-table td {
+                padding: 7px 6px;
+            }
+            .schedule-table input[type="text"] {
+                font-size: 13px;
+                padding: 8px;
+            }
+            .tab-btn {
+                padding: 6px 14px;
+                font-size: 13px;
+            }
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            .toolbar {
+                justify-content: flex-start;
+            }
+            .save-status {
+                width: 100%;
+                justify-content: center;
+            }
+            .schedule-table th:nth-child(2) {
+                width: 27%;
+            }
+        }
+        @media (max-width: 430px) {
+            body {
+                padding: 10px;
+            }
+            .header .teacher {
+                font-size: 14px;
+            }
+            .schedule-table {
+                font-size: 13px;
+            }
+            .lesson-fields {
+                grid-template-columns: minmax(100px, 0.7fr) minmax(200px, 1.3fr);
+            }
+            .schedule-table .subject-cell {
+                min-width: 82px;
+                font-size: 12px;
+            }
+            .schedule-table input[type="text"] {
+                min-height: 40px;
+            }
+            .toolbar button,
+            .theme-control select,
+            .daily-export-control {
+                flex: 1 1 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div>
+                <h1>
+                    📋 Daily Lesson Checklist
+                    <small>Grade V – LUGATIMAN</small>
+                </h1>
+            </div>
+            <div class="teacher">👨‍🏫 BONN ERVIN F. LUGATIMAN</div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs" id="tabContainer">
+            <button class="tab-btn monday active" data-day="monday">🔵 Monday</button>
+            <button class="tab-btn tuesday" data-day="tuesday">🔴 Tuesday</button>
+            <button class="tab-btn wednesday" data-day="wednesday">🟢 Wednesday</button>
+            <button class="tab-btn thursday" data-day="thursday">🟡 Thursday</button>
+            <button class="tab-btn friday" data-day="friday">🟣 Friday</button>
+            <button class="tab-btn summary" data-day="summary">📊 Weekly Overview</button>
+        </div>
+
+        <!-- ========== WEEKLY OVERVIEW ========== -->
+        <div class="day-panel" id="panel-summary">
+            <h2>📊 Weekly Overview <span class="badge">Monday → Friday</span></h2>
+            <div class="summary-overview" id="summaryOverview"></div>
+        </div>
+
+        <!-- ========== MONDAY ========== -->
+        <div class="day-panel active" id="panel-monday">
+            <h2>🔵 Monday <span class="badge">Flag Raising · Collaborative Session</span></h2>
+            <table class="schedule-table">
+                <thead><tr><th>✔</th><th>Subject / Schedule Item</th><th>Week · Learning Competency · Suggested Activities</th></tr></thead>
+                <tbody>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell">Flag Raising</td><td class="input-cell"><input type="text" placeholder="e.g. National anthem / school ceremony" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell">Daily Routine</td><td class="input-cell"><input type="text" placeholder="e.g. Prayer, attendance, classroom rules" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>HGP</strong> (Homeroom Guidance)</td><td class="input-cell"><input type="text" placeholder="Write your HGP lesson / topic" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>ENGLISH</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for English" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell break">HEALTH BREAK</td><td class="input-cell"><input type="text" placeholder="— break —" style="background:#f5f7fa;color:#6a7d94;" disabled /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>MATHEMATICS</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for Math" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>SCIENCE</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for Science" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell break">LUNCH BREAK</td><td class="input-cell"><input type="text" placeholder="— lunch —" style="background:#f5f7fa;color:#6a7d94;" disabled /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>FILIPINO</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for Filipino" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>ARALING PANLIPUNAN</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for AP" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>MAPEH</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for MAPEH" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><em>Collaborative Expertise Session</em></td><td class="input-cell"><input type="text" placeholder="Teacher collaboration / assignment" /></td></tr>
+                </tbody>
+            </table>
+            <div class="notes-area">
+                <label>📝 Monday Notes</label>
+                <textarea placeholder="Add any reminders, materials needed, or observations..."></textarea>
+            </div>
+        </div>
+
+        <!-- ========== TUESDAY ========== -->
+        <div class="day-panel" id="panel-tuesday">
+            <h2>🔴 Tuesday <span class="badge">ARAL Math</span></h2>
+            <table class="schedule-table">
+                <thead><tr><th>✔</th><th>Subject / Schedule Item</th><th>Week · Learning Competency · Suggested Activities</th></tr></thead>
+                <tbody>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell">Daily Routine</td><td class="input-cell"><input type="text" placeholder="e.g. Prayer, attendance" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>GMRC</strong> (Good Manners)</td><td class="input-cell"><input type="text" placeholder="GMRC lesson / topic" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>ENGLISH</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for English" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell break">HEALTH BREAK</td><td class="input-cell"><input type="text" placeholder="— break —" style="background:#f5f7fa;color:#6a7d94;" disabled /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>MATHEMATICS</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for Math" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>SCIENCE</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for Science" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell break">LUNCH BREAK</td><td class="input-cell"><input type="text" placeholder="— lunch —" style="background:#f5f7fa;color:#6a7d94;" disabled /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>FILIPINO</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for Filipino" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>EPP</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for EPP" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>MAPEH</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for MAPEH" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>ARAL PROGRAM (ARAL Math)</strong></td><td class="input-cell"><input type="text" placeholder="ARAL Math lesson / activity" /></td></tr>
+                </tbody>
+            </table>
+            <div class="notes-area">
+                <label>📝 Tuesday Notes</label>
+                <textarea placeholder="Add any reminders, materials needed, or observations..."></textarea>
+            </div>
+        </div>
+
+        <!-- ========== WEDNESDAY ========== -->
+        <div class="day-panel" id="panel-wednesday">
+            <h2>🟢 Wednesday <span class="badge">ARAL Math</span></h2>
+            <table class="schedule-table">
+                <thead><tr><th>✔</th><th>Subject / Schedule Item</th><th>Week · Learning Competency · Suggested Activities</th></tr></thead>
+                <tbody>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell">Daily Routine</td><td class="input-cell"><input type="text" placeholder="e.g. Prayer, attendance" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>GMRC</strong></td><td class="input-cell"><input type="text" placeholder="GMRC lesson / topic" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>ENGLISH</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for English" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell break">HEALTH BREAK</td><td class="input-cell"><input type="text" placeholder="— break —" style="background:#f5f7fa;color:#6a7d94;" disabled /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>MATHEMATICS</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for Math" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>SCIENCE</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for Science" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell break">LUNCH BREAK</td><td class="input-cell"><input type="text" placeholder="— lunch —" style="background:#f5f7fa;color:#6a7d94;" disabled /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>ARALING PANLIPUNAN</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for AP" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>EPP</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for EPP" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>MAPEH</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for MAPEH" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>ARAL PROGRAM (ARAL Math)</strong></td><td class="input-cell"><input type="text" placeholder="ARAL Math lesson / activity" /></td></tr>
+                </tbody>
+            </table>
+            <div class="notes-area">
+                <label>📝 Wednesday Notes</label>
+                <textarea placeholder="Add any reminders, materials needed, or observations..."></textarea>
+            </div>
+        </div>
+
+        <!-- ========== THURSDAY ========== -->
+        <div class="day-panel" id="panel-thursday">
+            <h2>🟡 Thursday <span class="badge">ARAL Reading · Collaborative Session</span></h2>
+            <table class="schedule-table">
+                <thead><tr><th>✔</th><th>Subject / Schedule Item</th><th>Week · Learning Competency · Suggested Activities</th></tr></thead>
+                <tbody>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell">Daily Routine</td><td class="input-cell"><input type="text" placeholder="e.g. Prayer, attendance" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>GMRC</strong></td><td class="input-cell"><input type="text" placeholder="GMRC lesson / topic" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>ENGLISH</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for English" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell break">HEALTH BREAK</td><td class="input-cell"><input type="text" placeholder="— break —" style="background:#f5f7fa;color:#6a7d94;" disabled /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>FILIPINO</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for Filipino" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>SCIENCE</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for Science" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell break">LUNCH BREAK</td><td class="input-cell"><input type="text" placeholder="— lunch —" style="background:#f5f7fa;color:#6a7d94;" disabled /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>ARALING PANLIPUNAN</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for AP" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>EPP</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for EPP" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>ARAL PROGRAM (ARAL Reading)</strong></td><td class="input-cell"><input type="text" placeholder="ARAL Reading lesson / activity" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><em>Collaborative Expertise Session</em></td><td class="input-cell"><input type="text" placeholder="Teacher collaboration / assignment" /></td></tr>
+                </tbody>
+            </table>
+            <div class="notes-area">
+                <label>📝 Thursday Notes</label>
+                <textarea placeholder="Add any reminders, materials needed, or observations..."></textarea>
+            </div>
+        </div>
+
+        <!-- ========== FRIDAY ========== -->
+        <div class="day-panel" id="panel-friday">
+            <h2>🟣 Friday <span class="badge">ARAL Reading · SLAC / Flag Lowering</span></h2>
+            <table class="schedule-table">
+                <thead><tr><th>✔</th><th>Subject / Schedule Item</th><th>Week · Learning Competency · Suggested Activities</th></tr></thead>
+                <tbody>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell">Daily Routine</td><td class="input-cell"><input type="text" placeholder="e.g. Prayer, attendance" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>GMRC</strong></td><td class="input-cell"><input type="text" placeholder="GMRC lesson / topic" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>MATHEMATICS</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for Math" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell break">HEALTH BREAK</td><td class="input-cell"><input type="text" placeholder="— break —" style="background:#f5f7fa;color:#6a7d94;" disabled /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>FILIPINO</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for Filipino" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>EPP</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for EPP" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell break">LUNCH BREAK</td><td class="input-cell"><input type="text" placeholder="— lunch —" style="background:#f5f7fa;color:#6a7d94;" disabled /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>ARALING PANLIPUNAN</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for AP" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>MAPEH</strong></td><td class="input-cell"><input type="text" placeholder="Lesson / activity for MAPEH" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>ARAL PROGRAM (ARAL Reading)</strong></td><td class="input-cell"><input type="text" placeholder="ARAL Reading lesson / activity" /></td></tr>
+                    <tr><td class="check-cell"><input type="checkbox" /></td><td class="subject-cell"><strong>SLAC Session / Flag Lowering</strong></td><td class="input-cell"><input type="text" placeholder="SLAC topic or flag ceremony notes" /></td></tr>
+                </tbody>
+            </table>
+            <div class="notes-area">
+                <label>📝 Friday Notes</label>
+                <textarea placeholder="Add any reminders, materials needed, or observations..."></textarea>
+            </div>
+        </div>
+
+        <!-- ========== WEEKLY SUMMARY ========== -->
+        <div class="summary-section">
+            <h3>📊 Weekly Subject Tracker (at-a-glance)</h3>
+            <div class="summary-grid" id="summaryGrid">
+                <!-- populated by JS -->
+            </div>
+        </div>
+
+        <!-- TOOLBAR -->
+        <div class="toolbar">
+            <div class="save-status" id="saveStatus">💾 Progress saved automatically</div>
+            <label class="theme-control" for="themeSelect">
+                <span class="sr-only">Color theme</span>
+                <select id="themeSelect" aria-label="Choose color theme">
+                    <option value="blossom">🎨 Blossom</option>
+                    <option value="sage">🌿 Sage</option>
+                    <option value="ocean">🌊 Ocean</option>
+                    <option value="sunshine">☀️ Sunshine</option>
+                </select>
+            </label>
+            <button class="clear-btn" onclick="clearAllInputs()">🧹 Clear all inputs</button>
+            <button class="generate-btn" type="button" onclick="generateWeeklyLesson(this)">📊 Generate Weekly Lesson</button>
+            <label class="daily-export-control" for="dailyLessonDay">
+                <span>Day</span>
+                <select id="dailyLessonDay" aria-label="Day to generate">
+                    <option value="monday">Monday</option>
+                    <option value="tuesday">Tuesday</option>
+                    <option value="wednesday">Wednesday</option>
+                    <option value="thursday">Thursday</option>
+                    <option value="friday">Friday</option>
+                </select>
+            </label>
+            <button class="generate-btn" type="button" onclick="generateDailyLesson(this)">🗓️ Generate Daily Lesson Summary</button>
+            <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+        </div>
+
+    </div>
+
+    <script src="sources/weekly-summary-template.js"></script>
+    <script src="sources/daily-summary-template.js"></script>
+    <script src="sources/lesson-options.js"></script>
+    <script>
+        // ─── TAB SWITCHING ───
+        if (!window.LESSON_OPTIONS) {
+            throw new Error('Dropdown data was not loaded. Check sources/lesson-options.js.');
+        }
+
+        const tabs = document.querySelectorAll('.tab-btn');
+        const panels = {
+            monday: document.getElementById('panel-monday'),
+            tuesday: document.getElementById('panel-tuesday'),
+            wednesday: document.getElementById('panel-wednesday'),
+            thursday: document.getElementById('panel-thursday'),
+            friday: document.getElementById('panel-friday'),
+            summary: document.getElementById('panel-summary')
+        };
+        const STORAGE_KEY = 'grade5-daily-lesson-checklist';
+        const THEME_STORAGE_KEY = 'grade5-daily-lesson-theme';
+        const themeSelect = document.getElementById('themeSelect');
+        const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+        const dayNames = {
+            monday: 'Monday',
+            tuesday: 'Tuesday',
+            wednesday: 'Wednesday',
+            thursday: 'Thursday',
+            friday: 'Friday'
+        };
+
+        function resolveSubjectKey(label) {
+            const normalized = label.replace(/\s+/g, ' ').trim().toUpperCase();
+            if (window.LESSON_OPTIONS.subjects[normalized]) return normalized;
+            if (normalized.startsWith('ARAL PROGRAM')) {
+                if (normalized.includes('MATH')) return 'MATHEMATICS';
+                if (normalized.includes('READING')) return 'ENGLISH';
+            }
+            const sourceMatch = Object.keys(window.LESSON_OPTIONS.subjects)
+                .find(subject => normalized.startsWith(subject));
+            if (sourceMatch) return sourceMatch;
+            const scheduleMatch = Object.entries(window.LESSON_OPTIONS.scheduleItems)
+                .find(([, item]) => item.label.toUpperCase() === normalized);
+            return scheduleMatch ? scheduleMatch[0] : '';
+        }
+
+        function makeDropdown(fieldKey, placeholderText, options, value = '', allowSavedValue = false) {
+            const select = document.createElement('select');
+            select.dataset.field = fieldKey;
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = placeholderText;
+            select.appendChild(placeholder);
+            options.forEach(optionValue => {
+                const option = document.createElement('option');
+                option.value = optionValue;
+                option.textContent = optionValue;
+                select.appendChild(option);
+            });
+            if (allowSavedValue) setDropdownValue(select, value);
+            else if (value && options.includes(value)) select.value = value;
+            return select;
+        }
+
+        const termIndependentSubjects = new Set(['ENGLISH', 'FILIPINO']);
+
+        function updateFieldPreview(select) {
+            const preview = select.closest('.lesson-field')?.querySelector('.lesson-field-preview');
+            if (preview) preview.textContent = select.value ? select.selectedOptions[0]?.textContent || '' : '';
+        }
+
+        function refreshRowFields(row, values = {}, keepSavedActivity = false) {
+            const subjectSelect = row.querySelector('[data-subject-select]');
+            const fieldCell = row.querySelector('.input-cell');
+            if (!subjectSelect || !fieldCell) return;
+
+            const subjectKey = subjectSelect.value;
+            const subjectOptions = window.LESSON_OPTIONS.subjects[subjectKey];
+            const scheduleItem = window.LESSON_OPTIONS.scheduleItems[subjectKey];
+            const term = values.term || '';
+            const termIndependent = termIndependentSubjects.has(subjectKey);
+            const competencies = subjectOptions
+                ? termIndependent
+                    ? [...new Set(Object.values(subjectOptions.competenciesByTerm || {}).flat())]
+                    : term
+                        ? subjectOptions.competenciesByTerm?.[term] || []
+                        : []
+                : [];
+            const activities = subjectOptions
+                ? subjectOptions.activities || []
+                : scheduleItem?.activities || [];
+            const fields = document.createElement('div');
+            fields.className = 'lesson-fields';
+            [
+                {
+                    key: 'term',
+                    label: 'Term',
+                    placeholder: subjectOptions ? 'Select' : 'N/A',
+                    options: subjectOptions?.terms || [],
+                    value: term,
+                    disabled: !subjectOptions
+                },
+                {
+                    key: 'week',
+                    label: 'Week',
+                    placeholder: subjectKey ? 'Select' : 'Choose a subject first',
+                    options: subjectKey ? window.LESSON_OPTIONS.weeks : [],
+                    value: values.week
+                },
+                {
+                    key: 'competency',
+                    label: 'Learning Competency',
+                    placeholder: !subjectOptions
+                        ? 'Schedule item only'
+                        : !termIndependent && !term
+                            ? 'Choose a term first'
+                            : competencies.length
+                                ? 'Choose a competency'
+                                : subjectOptions.termNotes?.[term] || `No competencies listed for Term ${term}`,
+                    options: competencies,
+                    value: values.competency,
+                    disabled: !subjectOptions || (!termIndependent && !term) || !competencies.length
+                },
+                {
+                    key: 'activity',
+                    label: 'Suggested Activities',
+                    placeholder: subjectKey ? 'Choose an activity' : 'Choose a subject first',
+                    options: subjectKey ? activities : [],
+                    value: values.activity,
+                    allowSavedValue: keepSavedActivity,
+                    disabled: !subjectKey
+                }
+            ].forEach(field => {
+                const label = document.createElement('label');
+                label.className = 'lesson-field';
+                label.append(document.createTextNode(field.label));
+                const control = makeDropdown(field.key, field.placeholder, field.options, field.value, field.allowSavedValue);
+                control.disabled = Boolean(field.disabled);
+                label.appendChild(control);
+                if (field.key === 'competency' || field.key === 'activity') {
+                    const preview = document.createElement('span');
+                    preview.className = 'lesson-field-preview';
+                    preview.setAttribute('aria-live', 'polite');
+                    preview.textContent = control.value ? control.selectedOptions[0]?.textContent || '' : '';
+                    label.appendChild(preview);
+                }
+                fields.appendChild(label);
+            });
+            fieldCell.replaceChildren(fields);
+        }
+
+        function prepareLessonFields() {
+            document.querySelectorAll('.schedule-table').forEach(table => {
+                const scrollContainer = document.createElement('div');
+                scrollContainer.className = 'table-scroll';
+                table.parentNode.insertBefore(scrollContainer, table);
+                scrollContainer.appendChild(table);
+
+                table.querySelectorAll('tbody tr').forEach(row => {
+                    const subjectCell = row.querySelector('.subject-cell');
+                    const fieldCell = row.querySelector('.input-cell');
+                    const originalInput = fieldCell?.querySelector('input[type="text"]');
+                    if (!subjectCell || !fieldCell || !originalInput) return;
+
+                    if (subjectCell.classList.contains('break')) {
+                        fieldCell.innerHTML = '<span class="break-placeholder">Break period</span>';
+                        return;
+                    }
+
+                    const previousActivity = originalInput.value;
+                    const defaultSubject = resolveSubjectKey(getSubjectText(subjectCell));
+                    subjectCell.replaceChildren();
+                    const subjectSelect = document.createElement('select');
+                    subjectSelect.className = 'subject-select';
+                    subjectSelect.dataset.subjectSelect = 'true';
+                    subjectSelect.setAttribute('aria-label', 'Subject');
+                    subjectSelect.dataset.defaultSubject = defaultSubject;
+                    const subjectPlaceholder = document.createElement('option');
+                    subjectPlaceholder.value = '';
+                    subjectPlaceholder.textContent = 'Choose subject';
+                    subjectSelect.appendChild(subjectPlaceholder);
+                    const curriculumGroup = document.createElement('optgroup');
+                    curriculumGroup.label = 'Curriculum subjects';
+                    Object.keys(window.LESSON_OPTIONS.subjects).forEach(subjectKey => {
+                        const option = document.createElement('option');
+                        option.value = subjectKey;
+                        option.textContent = subjectKey;
+                        curriculumGroup.appendChild(option);
+                    });
+                    subjectSelect.appendChild(curriculumGroup);
+                    const scheduleGroup = document.createElement('optgroup');
+                    scheduleGroup.label = 'Schedule items';
+                    Object.entries(window.LESSON_OPTIONS.scheduleItems).forEach(([subjectKey, item]) => {
+                        const option = document.createElement('option');
+                        option.value = subjectKey;
+                        option.textContent = item.label;
+                        scheduleGroup.appendChild(option);
+                    });
+                    subjectSelect.appendChild(scheduleGroup);
+                    subjectCell.appendChild(subjectSelect);
+                    if (defaultSubject) subjectSelect.value = defaultSubject;
+                    refreshRowFields(row, { activity: previousActivity }, Boolean(previousActivity));
+
+                    subjectSelect.addEventListener('change', () => {
+                        refreshRowFields(row);
+                        saveProgress();
+                    });
+                });
+            });
+        }
+
+        prepareLessonFields();
+
+        function applyTheme(theme) {
+            const availableThemes = ['blossom', 'sage', 'ocean', 'sunshine'];
+            const selectedTheme = availableThemes.includes(theme) ? theme : 'blossom';
+            if (selectedTheme === 'blossom') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.dataset.theme = selectedTheme;
+            }
+            themeSelect.value = selectedTheme;
+            try {
+                localStorage.setItem(THEME_STORAGE_KEY, selectedTheme);
+            } catch (error) {
+                console.warn('Could not save color theme:', error);
+            }
+        }
+
+        themeSelect.addEventListener('change', function() {
+            applyTheme(this.value);
+        });
+        try {
+            applyTheme(localStorage.getItem(THEME_STORAGE_KEY) || 'blossom');
+        } catch (error) {
+            console.warn('Could not restore color theme:', error);
+            applyTheme('blossom');
+        }
+
+        function showDay(day) {
+            tabs.forEach(btn => btn.classList.toggle('active', btn.dataset.day === day));
+            Object.entries(panels).forEach(([key, panel]) => panel.classList.toggle('active', key === day));
+            if (dayOrder.includes(day)) document.getElementById('dailyLessonDay').value = day;
+            document.querySelectorAll('.notes-area textarea').forEach(ta => {
+                ta.style.height = 'auto';
+                ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+            });
+        }
+
+        document.getElementById('dailyLessonDay').addEventListener('change', function() {
+            showDay(this.value);
+            saveProgress();
+        });
+
+        tabs.forEach(btn => {
+            btn.addEventListener('click', function() {
+                showDay(this.dataset.day);
+                saveProgress();
+            });
+        });
+
+        // ─── SUBJECT TEXT HELPERS ───
+        function getSubjectText(cell) {
+            if (!cell) return '';
+            const select = cell.querySelector('[data-subject-select]');
+            if (select) return select.selectedOptions[0]?.textContent.trim() || '';
+            return cell.textContent.replace(/\s+/g, ' ').trim();
+        }
+
+        function setDropdownValue(select, value) {
+            if (!select || !value) return;
+            if (!Array.from(select.options).some(option => option.value === value)) {
+                const savedOption = document.createElement('option');
+                savedOption.value = value;
+                savedOption.textContent = `Saved value: ${value}`;
+                select.appendChild(savedOption);
+            }
+            select.value = value;
+        }
+
+        // ─── BUILD WEEKLY SUMMARY ───
+        function getVisibleRows(panel) {
+            return Array.from(panel.querySelectorAll('tbody tr')).map(row => {
+                const checkbox = row.querySelector('input[type="checkbox"]');
+                const subjectCell = row.querySelector('.subject-cell');
+                const fieldValue = key => row.querySelector(`[data-field="${key}"]`)?.value.trim() || '';
+                return {
+                    subject: getSubjectText(subjectCell),
+                    checked: checkbox ? checkbox.checked : false,
+                    term: fieldValue('term'),
+                    week: fieldValue('week'),
+                    competency: fieldValue('competency'),
+                    activity: fieldValue('activity')
+                };
+            }).filter(item => item.subject);
+        }
+
+        function renderSummary() {
+            const grid = document.getElementById('summaryGrid');
+            if (!grid) return;
+
+            const tracker = new Map();
+            dayOrder.forEach((day, index) => {
+                const panel = panels[day];
+                if (!panel) return;
+                getVisibleRows(panel).forEach(item => {
+                    if (!tracker.has(item.subject)) {
+                        tracker.set(item.subject, Array(5).fill('')); 
+                    }
+                    const values = tracker.get(item.subject);
+                    values[index] = item.checked ? 'checked' : 'scheduled';
+                    tracker.set(item.subject, values);
+                });
+            });
+
+            grid.innerHTML = '';
+            Array.from(tracker.entries())
+                .sort((a, b) => a[0].localeCompare(b[0]))
+                .forEach(([subject, days]) => {
+                    const row = document.createElement('div');
+                    row.className = 'subject-row';
+
+                    const subjSpan = document.createElement('span');
+                    subjSpan.className = 'subj';
+                    subjSpan.textContent = subject;
+
+                    const daysSpan = document.createElement('span');
+                    daysSpan.className = 'days';
+                    daysSpan.innerHTML = days.map((status) => {
+                        if (status === 'checked') return '<span class="check-mark">✓</span>';
+                        if (status === 'scheduled') return '<span class="scheduled">•</span>';
+                        return '<span class="dash">–</span>';
+                    }).join('');
+
+                    row.appendChild(subjSpan);
+                    row.appendChild(daysSpan);
+                    grid.appendChild(row);
+                });
+        }
+
+        function renderSummaryPanel() {
+            const container = document.getElementById('summaryOverview');
+            if (!container) return;
+
+            container.innerHTML = '';
+            const cards = dayOrder.map(day => {
+                const panel = panels[day];
+                if (!panel) return null;
+
+                const heading = dayNames[day];
+                const rows = getVisibleRows(panel);
+                const notes = panel.querySelector('.notes-area textarea')?.value.trim() || '';
+                const completed = rows.filter(row => row.checked).length;
+
+                const card = document.createElement('div');
+                card.className = 'summary-day-card';
+
+                const title = document.createElement('h4');
+                title.innerHTML = `${heading} <span>${completed} completed</span>`;
+                card.appendChild(title);
+
+                const list = document.createElement('div');
+                list.className = 'summary-list';
+                rows.forEach(row => {
+                    const item = document.createElement('div');
+                    item.className = 'summary-row';
+
+                    const left = document.createElement('div');
+                    left.className = 'summary-left';
+                    const badge = document.createElement('span');
+                    badge.className = `status-badge ${row.checked ? 'done' : 'pending'}`;
+                    badge.textContent = row.checked ? '✓' : '○';
+                    left.appendChild(badge);
+
+                    const content = document.createElement('div');
+                    const subject = document.createElement('div');
+                    subject.className = 'summary-subject';
+                    subject.textContent = row.subject;
+                    content.appendChild(subject);
+                    const details = [
+                        row.term && `Term: ${row.term}`,
+                        row.week && `Week: ${row.week}`,
+                        row.competency && `Learning Competency: ${row.competency}`,
+                        row.activity && `Suggested Activities: ${row.activity}`
+                    ].filter(Boolean);
+                    if (details.length) {
+                        const detail = document.createElement('div');
+                        detail.className = 'summary-detail';
+                        detail.textContent = details.join(' · ');
+                        content.appendChild(detail);
+                    }
+                    left.appendChild(content);
+
+                    item.appendChild(left);
+                    list.appendChild(item);
+                });
+                card.appendChild(list);
+
+                if (notes) {
+                    const noteBox = document.createElement('div');
+                    noteBox.className = 'summary-notes';
+                    noteBox.textContent = `Notes: ${notes}`;
+                    card.appendChild(noteBox);
+                }
+
+                return card;
+            }).filter(Boolean);
+
+            cards.forEach(card => container.appendChild(card));
+        }
+
+        const XLSX_NS = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
+        const XML_NS = 'http://www.w3.org/XML/1998/namespace';
+        const WEEKDAY_LABELS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        const EXPORT_SUBJECTS = new Set([
+            'ENGLISH',
+            'FILIPINO',
+            'MATHEMATICS',
+            'SCIENCE',
+            'EPP',
+            'ARALING PANLIPUNAN',
+            'MAPEH',
+            'GMRC'
+        ]);
+        const EXCEL_DAY_COLUMNS = [
+            { competency: 'E', activity: 'F' },
+            { competency: 'H', activity: 'I' },
+            { competency: 'K', activity: 'L' },
+            { competency: 'N', activity: 'O' },
+            { competency: 'Q', activity: 'R' }
+        ];
+
+        function setExportStatus(message, isError = false) {
+            const status = document.getElementById('saveStatus');
+            if (!status) return;
+            status.textContent = message;
+            status.style.color = isError ? '#9b3030' : '#2f6b45';
+        }
+
+        function writeWorksheetCell(sheet, address, value) {
+            const cell = sheet.getElementsByTagNameNS(XLSX_NS, 'c');
+            const target = Array.from(cell).find(item => item.getAttribute('r') === address);
+            if (!target) throw new Error(`The Excel template is missing cell ${address}.`);
+
+            target.removeAttribute('t');
+            for (const child of Array.from(target.childNodes)) {
+                if (child.nodeType === Node.ELEMENT_NODE) target.removeChild(child);
+            }
+            if (value === '' || value === null || value === undefined) return;
+
+            target.setAttribute('t', 'inlineStr');
+            const inline = sheet.createElementNS(XLSX_NS, 'is');
+            const text = sheet.createElementNS(XLSX_NS, 't');
+            text.setAttributeNS(XML_NS, 'xml:space', 'preserve');
+            text.textContent = String(value);
+            inline.appendChild(text);
+            target.appendChild(inline);
+        }
+
+        function workbookEntriesFromPage() {
+            const grouped = new Map();
+            const notes = [];
+
+            dayOrder.forEach((day, dayIndex) => {
+                const panel = panels[day];
+                if (!panel) return;
+                const dayNotes = panel.querySelector('.notes-area textarea')?.value.trim() || '';
+                notes.push(dayNotes);
+
+                panel.querySelectorAll('tbody tr').forEach(row => {
+                    const subjectCell = row.querySelector('.subject-cell');
+                    if (!subjectCell || subjectCell.classList.contains('break')) return;
+                    const subjectSelect = subjectCell.querySelector('[data-subject-select]');
+                    const subjectKey = subjectSelect?.value || resolveSubjectKey(getSubjectText(subjectCell));
+                    if (!EXPORT_SUBJECTS.has(subjectKey)) return;
+
+                    const subject = subjectSelect?.selectedOptions[0]?.textContent.trim() || getSubjectText(subjectCell);
+                    const fieldValue = key => row.querySelector(`[data-field="${key}"]`)?.value.trim() || '';
+                    const term = fieldValue('term');
+                    const week = fieldValue('week');
+                    const competency = fieldValue('competency');
+                    const activity = fieldValue('activity');
+                    if (!term && !week && !competency && !activity) return;
+
+                    const groupKey = `${subjectKey}\u001f${term}\u001f${week}`;
+                    if (!grouped.has(groupKey)) {
+                        grouped.set(groupKey, {
+                            subject,
+                            term: term || (window.LESSON_OPTIONS.subjects[subjectKey] ? '' : 'N/A'),
+                            week,
+                            days: Array.from({ length: 5 }, () => ({ competencies: [], activities: [] }))
+                        });
+                    }
+
+                    const dayEntry = grouped.get(groupKey).days[dayIndex];
+                    if (competency && !dayEntry.competencies.includes(competency)) dayEntry.competencies.push(competency);
+                    if (activity && !dayEntry.activities.includes(activity)) dayEntry.activities.push(activity);
+                });
+            });
+
+            return { entries: Array.from(grouped.values()), notes };
+        }
+
+        function ensureWorksheetRow(sheet, rowNumber, finalColumn = 'R') {
+            const sheetData = sheet.getElementsByTagNameNS(XLSX_NS, 'sheetData')[0];
+            const existing = Array.from(sheetData.getElementsByTagNameNS(XLSX_NS, 'row'))
+                .find(row => Number(row.getAttribute('r')) === rowNumber);
+            if (existing) return existing;
+
+            const styleSourceNumber = rowNumber % 2 ? 17 : 18;
+            const styleSource = Array.from(sheetData.getElementsByTagNameNS(XLSX_NS, 'row'))
+                .find(row => Number(row.getAttribute('r')) === styleSourceNumber);
+            if (!styleSource) throw new Error('The Excel template does not contain a row style to extend.');
+            const newRow = styleSource.cloneNode(true);
+            newRow.setAttribute('r', String(rowNumber));
+            newRow.setAttribute('spans', finalColumn === 'F' ? '1:6' : '1:18');
+            for (const cell of Array.from(newRow.getElementsByTagNameNS(XLSX_NS, 'c'))) {
+                const column = cell.getAttribute('r').replace(/\d/g, '');
+                cell.setAttribute('r', `${column}${rowNumber}`);
+            }
+            sheetData.appendChild(newRow);
+            return newRow;
+        }
+
+        function writeWorksheetRowCell(row, column, rowNumber, value) {
+            const address = `${column}${rowNumber}`;
+            const cell = Array.from(row.getElementsByTagNameNS(XLSX_NS, 'c'))
+                .find(item => item.getAttribute('r') === address);
+            if (!cell) throw new Error(`The Excel template is missing cell ${address}.`);
+
+            cell.removeAttribute('t');
+            for (const child of Array.from(cell.childNodes)) {
+                if (child.nodeType === Node.ELEMENT_NODE) cell.removeChild(child);
+            }
+            if (value === '' || value === null || value === undefined) return;
+
+            cell.setAttribute('t', 'inlineStr');
+            const inline = row.ownerDocument.createElementNS(XLSX_NS, 'is');
+            const text = row.ownerDocument.createElementNS(XLSX_NS, 't');
+            text.setAttributeNS(XML_NS, 'xml:space', 'preserve');
+            text.textContent = String(value);
+            inline.appendChild(text);
+            cell.appendChild(inline);
+        }
+
+        function fillWeeklyWorksheet(xml, weeklyData) {
+            const sheet = new DOMParser().parseFromString(xml, 'application/xml');
+            if (sheet.getElementsByTagName('parsererror').length) {
+                throw new Error('The selected workbook contains an unreadable worksheet.');
+            }
+            writeWorksheetCell(sheet, 'M6', 'DAY 4');
+            writeWorksheetCell(sheet, 'P6', 'DAY 5');
+
+            const dailyNotes = sheet.getElementsByTagNameNS(XLSX_NS, 'row');
+            const notesRow = Array.from(dailyNotes).find(row => row.getAttribute('r') === '5');
+            if (!notesRow) throw new Error('The Excel template is missing its general information row.');
+            const newMerges = ['A5:C5', 'D5:F5', 'G5:I5', 'J5:L5', 'M5:O5', 'P5:R5'];
+            const mergeCells = sheet.getElementsByTagNameNS(XLSX_NS, 'mergeCells')[0];
+            if (!mergeCells) throw new Error('The Excel template is missing its worksheet merge settings.');
+            const currentMerges = new Set(Array.from(mergeCells.getElementsByTagNameNS(XLSX_NS, 'mergeCell'))
+                .map(merge => merge.getAttribute('ref')));
+            newMerges.forEach(reference => {
+                if (currentMerges.has(reference)) return;
+                const merge = sheet.createElementNS(XLSX_NS, 'mergeCell');
+                merge.setAttribute('ref', reference);
+                mergeCells.appendChild(merge);
+            });
+            mergeCells.setAttribute('count', String(mergeCells.getElementsByTagNameNS(XLSX_NS, 'mergeCell').length));
+
+            writeWorksheetCell(sheet, 'A5', 'DAILY NOTES');
+            ['D5', 'G5', 'J5', 'M5', 'P5'].forEach((address, index) => {
+                writeWorksheetCell(sheet, address, weeklyData.notes[index] ? `${WEEKDAY_LABELS[index]}: ${weeklyData.notes[index]}` : '');
+            });
+            const longestNote = Math.max(0, ...weeklyData.notes.map(note => note.length));
+            notesRow.setAttribute('ht', String(Math.max(30, Math.min(210, Math.ceil(longestNote / 54) * 15 + 15))));
+            notesRow.setAttribute('customHeight', '1');
+
+            const firstDataRow = 7;
+            const outputCount = weeklyData.entries.length;
+            for (let index = 0; index < outputCount; index++) {
+                const rowNumber = firstDataRow + index;
+                const row = ensureWorksheetRow(sheet, rowNumber);
+                const entry = weeklyData.entries[index];
+                writeWorksheetRowCell(row, 'A', rowNumber, entry.subject);
+                writeWorksheetRowCell(row, 'B', rowNumber, entry.term);
+                writeWorksheetRowCell(row, 'C', rowNumber, entry.week);
+                entry.days.forEach((day, dayIndex) => {
+                    const columns = EXCEL_DAY_COLUMNS[dayIndex];
+                    writeWorksheetRowCell(row, columns.competency, rowNumber, day.competencies.join('\n'));
+                    writeWorksheetRowCell(row, columns.activity, rowNumber, day.activities.join('\n'));
+                });
+
+                const longestCell = Math.max(
+                    entry.subject.length,
+                    entry.term.length,
+                    entry.week.length,
+                    ...entry.days.flatMap(day => [
+                        day.competencies.join('\n').length,
+                        day.activities.join('\n').length
+                    ])
+                );
+                row.setAttribute('ht', String(Math.max(42, Math.min(360, Math.ceil(longestCell / 18) * 15 + 10))));
+                row.setAttribute('customHeight', '1');
+            }
+
+            const dimension = sheet.getElementsByTagNameNS(XLSX_NS, 'dimension')[0];
+            if (dimension) dimension.setAttribute('ref', `A1:R${Math.max(18, firstDataRow + outputCount - 1)}`);
+            return new XMLSerializer().serializeToString(sheet);
+        }
+
+        function fillDailyWorksheet(xml, dailyData) {
+            const sheet = new DOMParser().parseFromString(xml, 'application/xml');
+            if (sheet.getElementsByTagName('parsererror').length) {
+                throw new Error('The daily Excel template contains an unreadable worksheet.');
+            }
+            const mergeCells = sheet.getElementsByTagNameNS(XLSX_NS, 'mergeCells')[0];
+            if (!mergeCells) throw new Error('The daily Excel template is missing its worksheet merge settings.');
+            const noteMerge = 'A5:F5';
+            const existingMerges = new Set(Array.from(mergeCells.getElementsByTagNameNS(XLSX_NS, 'mergeCell'))
+                .map(merge => merge.getAttribute('ref')));
+            if (!existingMerges.has(noteMerge)) {
+                const merge = sheet.createElementNS(XLSX_NS, 'mergeCell');
+                merge.setAttribute('ref', noteMerge);
+                mergeCells.appendChild(merge);
+            }
+            mergeCells.setAttribute('count', String(mergeCells.getElementsByTagNameNS(XLSX_NS, 'mergeCell').length));
+
+            writeWorksheetCell(sheet, 'A5', dailyData.dayNotes
+                ? `${dailyData.day.toUpperCase()} LESSON NOTES: ${dailyData.dayNotes}`
+                : `${dailyData.day.toUpperCase()} LESSON SUMMARY`);
+            const notesRow = Array.from(sheet.getElementsByTagNameNS(XLSX_NS, 'row'))
+                .find(row => row.getAttribute('r') === '5');
+            if (!notesRow) throw new Error('The daily Excel template is missing its notes row.');
+            const noteHeight = Math.max(30, Math.min(210, Math.ceil(dailyData.dayNotes.length / 72) * 15 + 15));
+            notesRow.setAttribute('ht', String(noteHeight));
+            notesRow.setAttribute('customHeight', '1');
+
+            const firstDataRow = 7;
+            for (let index = 0; index < dailyData.entries.length; index++) {
+                const rowNumber = firstDataRow + index;
+                const row = ensureWorksheetRow(sheet, rowNumber, 'F');
+                const entry = dailyData.entries[index];
+                writeWorksheetRowCell(row, 'A', rowNumber, entry.subject);
+                writeWorksheetRowCell(row, 'B', rowNumber, entry.term);
+                writeWorksheetRowCell(row, 'C', rowNumber, entry.week);
+                writeWorksheetRowCell(row, 'D', rowNumber, dailyData.day);
+                writeWorksheetRowCell(row, 'E', rowNumber, entry.competencies.join('\n'));
+                writeWorksheetRowCell(row, 'F', rowNumber, entry.activities.join('\n'));
+
+                const longestCell = Math.max(
+                    entry.subject.length,
+                    entry.term.length,
+                    entry.week.length,
+                    dailyData.day.length,
+                    entry.competencies.join('\n').length,
+                    entry.activities.join('\n').length
+                );
+                row.setAttribute('ht', String(Math.max(42, Math.min(360, Math.ceil(longestCell / 18) * 15 + 10))));
+                row.setAttribute('customHeight', '1');
+            }
+
+            const dimension = sheet.getElementsByTagNameNS(XLSX_NS, 'dimension')[0];
+            if (dimension) dimension.setAttribute('ref', `A1:F${Math.max(18, firstDataRow + dailyData.entries.length - 1)}`);
+            return new XMLSerializer().serializeToString(sheet);
+        }
+
+        function downloadWorkbook(workbook, filename) {
+            const downloadUrl = URL.createObjectURL(new Blob([workbook], {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }));
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+        }
+
+        function crc32(bytes) {
+            let checksum = 0xffffffff;
+            for (const byte of bytes) {
+                checksum ^= byte;
+                for (let bit = 0; bit < 8; bit++) checksum = checksum & 1 ? (checksum >>> 1) ^ 0xedb88320 : checksum >>> 1;
+            }
+            return (checksum ^ 0xffffffff) >>> 0;
+        }
+
+        async function compressionStreamBytes(bytes, format) {
+            const stream = new (format === 'inflate' ? DecompressionStream : CompressionStream)('deflate-raw');
+            const output = new Response(stream.readable).arrayBuffer();
+            const writer = stream.writable.getWriter();
+            await writer.write(bytes);
+            await writer.close();
+            return new Uint8Array(await output);
+        }
+
+        function joinByteArrays(chunks) {
+            const length = chunks.reduce((total, chunk) => total + chunk.length, 0);
+            const joined = new Uint8Array(length);
+            let offset = 0;
+            chunks.forEach(chunk => {
+                joined.set(chunk, offset);
+                offset += chunk.length;
+            });
+            return joined;
+        }
+
+        async function updateXlsxWorksheet(file, updatedSheetXml) {
+            if (typeof CompressionStream === 'undefined' || typeof DecompressionStream === 'undefined') {
+                throw new Error('This browser does not support Excel generation. Please use a recent version of Microsoft Edge or Chrome.');
+            }
+            const source = new Uint8Array(await file.arrayBuffer());
+            const sourceView = new DataView(source.buffer, source.byteOffset, source.byteLength);
+            let eocdOffset = -1;
+            for (let offset = source.length - 22; offset >= Math.max(0, source.length - 65557); offset--) {
+                if (sourceView.getUint32(offset, true) === 0x06054b50) {
+                    eocdOffset = offset;
+                    break;
+                }
+            }
+            if (eocdOffset < 0) throw new Error('The selected file is not a valid .xlsx workbook.');
+
+            const entryCount = sourceView.getUint16(eocdOffset + 10, true);
+            let directoryOffset = sourceView.getUint32(eocdOffset + 16, true);
+            const entries = [];
+            const decoder = new TextDecoder();
+            let worksheetFound = false;
+            for (let index = 0; index < entryCount; index++) {
+                if (sourceView.getUint32(directoryOffset, true) !== 0x02014b50) {
+                    throw new Error('The selected workbook has an invalid ZIP directory.');
+                }
+                const nameLength = sourceView.getUint16(directoryOffset + 28, true);
+                const extraLength = sourceView.getUint16(directoryOffset + 30, true);
+                const commentLength = sourceView.getUint16(directoryOffset + 32, true);
+                const nameBytes = source.slice(directoryOffset + 46, directoryOffset + 46 + nameLength);
+                const name = decoder.decode(nameBytes);
+                const flags = sourceView.getUint16(directoryOffset + 8, true);
+                const method = sourceView.getUint16(directoryOffset + 10, true);
+                const crc = sourceView.getUint32(directoryOffset + 16, true);
+                const compressedSize = sourceView.getUint32(directoryOffset + 20, true);
+                const uncompressedSize = sourceView.getUint32(directoryOffset + 24, true);
+                const localOffset = sourceView.getUint32(directoryOffset + 42, true);
+                const localNameLength = sourceView.getUint16(localOffset + 26, true);
+                const localExtraLength = sourceView.getUint16(localOffset + 28, true);
+                const dataOffset = localOffset + 30 + localNameLength + localExtraLength;
+                let compressed = source.slice(dataOffset, dataOffset + compressedSize);
+                let outputCrc = crc;
+                let outputSize = uncompressedSize;
+
+                if (name === 'xl/worksheets/sheet1.xml') {
+                    if (method !== 8 || (flags & 1)) throw new Error('The template worksheet uses unsupported ZIP compression.');
+                    const xmlBytes = await compressionStreamBytes(compressed, 'inflate');
+                    const originalXml = new TextDecoder().decode(xmlBytes);
+                    const changedXml = updatedSheetXml(originalXml);
+                    const changedBytes = new TextEncoder().encode(changedXml);
+                    compressed = await compressionStreamBytes(changedBytes, 'deflate');
+                    outputCrc = crc32(changedBytes);
+                    outputSize = changedBytes.length;
+                    worksheetFound = true;
+                }
+
+                entries.push({
+                    nameBytes,
+                    versionMade: sourceView.getUint16(directoryOffset + 4, true),
+                    versionNeeded: sourceView.getUint16(directoryOffset + 6, true),
+                    flags: (flags & ~0x0008) | 0x0800,
+                    method,
+                    time: sourceView.getUint16(directoryOffset + 12, true),
+                    date: sourceView.getUint16(directoryOffset + 14, true),
+                    crc: outputCrc,
+                    compressed,
+                    uncompressedSize: outputSize,
+                    internalAttributes: sourceView.getUint16(directoryOffset + 36, true),
+                    externalAttributes: sourceView.getUint32(directoryOffset + 38, true)
+                });
+                directoryOffset += 46 + nameLength + extraLength + commentLength;
+            }
+            if (!worksheetFound) throw new Error('Could not find the weekly summary worksheet in the selected template.');
+
+            const localParts = [];
+            const centralParts = [];
+            let localOffset = 0;
+            for (const entry of entries) {
+                const local = new Uint8Array(30 + entry.nameBytes.length);
+                const localView = new DataView(local.buffer);
+                localView.setUint32(0, 0x04034b50, true);
+                localView.setUint16(4, entry.versionNeeded, true);
+                localView.setUint16(6, entry.flags, true);
+                localView.setUint16(8, entry.method, true);
+                localView.setUint16(10, entry.time, true);
+                localView.setUint16(12, entry.date, true);
+                localView.setUint32(14, entry.crc, true);
+                localView.setUint32(18, entry.compressed.length, true);
+                localView.setUint32(22, entry.uncompressedSize, true);
+                localView.setUint16(26, entry.nameBytes.length, true);
+                localView.setUint16(28, 0, true);
+                local.set(entry.nameBytes, 30);
+                localParts.push(local, entry.compressed);
+
+                const central = new Uint8Array(46 + entry.nameBytes.length);
+                const centralView = new DataView(central.buffer);
+                centralView.setUint32(0, 0x02014b50, true);
+                centralView.setUint16(4, entry.versionMade, true);
+                centralView.setUint16(6, entry.versionNeeded, true);
+                centralView.setUint16(8, entry.flags, true);
+                centralView.setUint16(10, entry.method, true);
+                centralView.setUint16(12, entry.time, true);
+                centralView.setUint16(14, entry.date, true);
+                centralView.setUint32(16, entry.crc, true);
+                centralView.setUint32(20, entry.compressed.length, true);
+                centralView.setUint32(24, entry.uncompressedSize, true);
+                centralView.setUint16(28, entry.nameBytes.length, true);
+                centralView.setUint16(30, 0, true);
+                centralView.setUint16(32, 0, true);
+                centralView.setUint16(34, 0, true);
+                centralView.setUint16(36, entry.internalAttributes, true);
+                centralView.setUint32(38, entry.externalAttributes, true);
+                centralView.setUint32(42, localOffset, true);
+                central.set(entry.nameBytes, 46);
+                centralParts.push(central);
+                localOffset += local.length + entry.compressed.length;
+            }
+
+            const centralDirectory = joinByteArrays(centralParts);
+            const end = new Uint8Array(22);
+            const endView = new DataView(end.buffer);
+            endView.setUint32(0, 0x06054b50, true);
+            endView.setUint16(8, entries.length, true);
+            endView.setUint16(10, entries.length, true);
+            endView.setUint32(12, centralDirectory.length, true);
+            endView.setUint32(16, localOffset, true);
+            return joinByteArrays([...localParts, centralDirectory, end]);
+        }
+
+        async function generateWeeklyLesson(button) {
+            button.disabled = true;
+            setExportStatus('Preparing weekly lesson workbook…');
+            try {
+                const templateBase64 = window.WEEKLY_SUMMARY_TEMPLATE_BASE64;
+                if (!templateBase64) throw new Error('The Excel template was not loaded. Check sources/weekly-summary-template.js.');
+                const binaryTemplate = atob(templateBase64);
+                const templateBytes = Uint8Array.from(binaryTemplate, character => character.charCodeAt(0));
+                const templateFile = new File([templateBytes], 'WEEKLY SUMMARY.xlsx', {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                const weeklyData = workbookEntriesFromPage();
+                const workbook = await updateXlsxWorksheet(templateFile, xml => fillWeeklyWorksheet(xml, weeklyData));
+                downloadWorkbook(workbook, 'WEEKLY LESSON SUMMARY.xlsx');
+                setExportStatus(`✔ Weekly lesson generated (${weeklyData.entries.length} subject rows).`);
+            } catch (error) {
+                console.error('Could not generate weekly lesson:', error);
+                setExportStatus(`Could not generate weekly lesson: ${error.message}`, true);
+                alert(`Could not generate weekly lesson.\n${error.message}`);
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        function dailyLessonData(dayKey) {
+            const panel = panels[dayKey];
+            if (!panel || !dayOrder.includes(dayKey)) throw new Error('Choose a weekday before generating the daily summary.');
+            const day = dayNames[dayKey];
+            const grouped = new Map();
+            panel.querySelectorAll('tbody tr').forEach(row => {
+                const subjectCell = row.querySelector('.subject-cell');
+                if (!subjectCell || subjectCell.classList.contains('break')) return;
+                const subjectSelect = subjectCell.querySelector('[data-subject-select]');
+                const subjectKey = subjectSelect?.value || resolveSubjectKey(getSubjectText(subjectCell));
+                if (!EXPORT_SUBJECTS.has(subjectKey)) return;
+
+                const fieldValue = key => row.querySelector(`[data-field="${key}"]`)?.value.trim() || '';
+                const term = fieldValue('term');
+                const week = fieldValue('week');
+                const competency = fieldValue('competency');
+                const activity = fieldValue('activity');
+                if (!term && !week && !competency && !activity) return;
+
+                const groupKey = `${subjectKey}\u001f${term}\u001f${week}`;
+                if (!grouped.has(groupKey)) {
+                    grouped.set(groupKey, {
+                        subject: subjectSelect?.selectedOptions[0]?.textContent.trim() || getSubjectText(subjectCell),
+                        term: term || (window.LESSON_OPTIONS.subjects[subjectKey] ? '' : 'N/A'),
+                        week,
+                        competencies: [],
+                        activities: []
+                    });
+                }
+                const entry = grouped.get(groupKey);
+                if (competency && !entry.competencies.includes(competency)) entry.competencies.push(competency);
+                if (activity && !entry.activities.includes(activity)) entry.activities.push(activity);
+            });
+
+            return {
+                day,
+                dayNotes: panel.querySelector('.notes-area textarea')?.value.trim() || '',
+                entries: Array.from(grouped.values())
+            };
+        }
+
+        async function generateDailyLesson(button) {
+            button.disabled = true;
+            const dayKey = document.getElementById('dailyLessonDay').value;
+            const day = dayNames[dayKey];
+            setExportStatus(`Preparing ${day || 'daily'} lesson summary…`);
+            try {
+                const templateBase64 = window.DAILY_SUMMARY_TEMPLATE_BASE64;
+                if (!templateBase64) throw new Error('The daily Excel template was not loaded. Check sources/daily-summary-template.js.');
+                const templateBytes = Uint8Array.from(atob(templateBase64), character => character.charCodeAt(0));
+                const templateFile = new File([templateBytes], 'DAILY SUMMARY.xlsx', {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                const data = dailyLessonData(dayKey);
+                if (!data.entries.length) throw new Error(`There are no lesson details entered for ${data.day}. Add a week, competency, or activity first.`);
+                const workbook = await updateXlsxWorksheet(templateFile, xml => fillDailyWorksheet(xml, data));
+                downloadWorkbook(workbook, `${data.day.toUpperCase()} DAILY LESSON SUMMARY.xlsx`);
+                setExportStatus(`✔ ${data.day} lesson summary generated (${data.entries.length} subject rows).`);
+            } catch (error) {
+                console.error('Could not generate daily lesson summary:', error);
+                setExportStatus(`Could not generate daily lesson summary: ${error.message}`, true);
+                alert(`Could not generate daily lesson summary.\n${error.message}`);
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        // ─── PERSIST PROGRESS TO LOCAL STORAGE ───
+        function collectProgressState() {
+            const state = {};
+            document.querySelectorAll('.day-panel').forEach(panel => {
+                const day = panel.id.replace('panel-', '');
+                const entries = Array.from(panel.querySelectorAll('tbody tr')).map(row => {
+                    const checkbox = row.querySelector('input[type="checkbox"]');
+                    const subjectCell = row.querySelector('.subject-cell');
+                    const subjectSelect = subjectCell?.querySelector('[data-subject-select]');
+                    const fieldValue = key => row.querySelector(`[data-field="${key}"]`)?.value || '';
+                    const activity = fieldValue('activity');
+                    return {
+                        subject: subjectSelect?.value || '',
+                        checked: checkbox ? checkbox.checked : false,
+                        term: fieldValue('term'),
+                        week: fieldValue('week'),
+                        competency: fieldValue('competency'),
+                        activity,
+                        value: activity
+                    };
+                });
+                const notes = panel.querySelector('.notes-area textarea');
+                state[day] = {
+                    entries,
+                    notes: notes ? notes.value : ''
+                };
+            });
+            state.activeDay = document.querySelector('.tab-btn.active')?.dataset.day || 'monday';
+            return state;
+        }
+
+        function saveProgress() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(collectProgressState()));
+                const saveStatus = document.getElementById('saveStatus');
+                if (saveStatus) {
+                    saveStatus.textContent = '✔ Saved locally in this browser';
+                    saveStatus.style.color = '#2f6b45';
+                }
+                renderSummary();
+                renderSummaryPanel();
+            } catch (error) {
+                console.warn('Could not save progress:', error);
+            }
+        }
+
+        function restoreProgress() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (!saved) return false;
+
+                const state = JSON.parse(saved);
+                if (!state) return false;
+
+                document.querySelectorAll('.day-panel').forEach(panel => {
+                    const day = panel.id.replace('panel-', '');
+                    const dayState = state[day];
+                    if (!dayState) return;
+
+                    const rows = panel.querySelectorAll('tbody tr');
+                    rows.forEach((row, index) => {
+                        const entry = dayState.entries?.[index];
+                        if (!entry) return;
+                        const checkbox = row.querySelector('input[type="checkbox"]');
+                        if (checkbox) checkbox.checked = Boolean(entry.checked);
+                        const subjectSelect = row.querySelector('[data-subject-select]');
+                        if (subjectSelect) {
+                            const savedSubject = entry.subject || row.querySelector('.subject-cell')?.textContent || '';
+                            const resolvedSubject = resolveSubjectKey(savedSubject);
+                            subjectSelect.value = resolvedSubject || subjectSelect.dataset.defaultSubject || '';
+                        }
+                        const restoredSubject = subjectSelect?.value || '';
+                        refreshRowFields(row, {
+                            term: entry.term || '',
+                            week: entry.week || '',
+                            competency: entry.term || termIndependentSubjects.has(restoredSubject)
+                                ? entry.competency || ''
+                                : '',
+                            activity: entry.activity ?? entry.value ?? ''
+                        }, true);
+                    });
+
+                    const notes = panel.querySelector('.notes-area textarea');
+                    if (notes) notes.value = dayState.notes || '';
+                });
+
+                showDay(state.activeDay || 'monday');
+                renderSummary();
+                renderSummaryPanel();
+                return true;
+            } catch (error) {
+                console.warn('Could not restore progress:', error);
+                return false;
+            }
+        }
+
+        // ─── CLEAR ALL INPUTS & CHECKBOXES ───
+        function clearAllInputs() {
+            if (!confirm('Clear all typed inputs and uncheck all checkboxes?')) return;
+
+            document.querySelectorAll('.lesson-fields select').forEach(select => select.value = '');
+            document.querySelectorAll('.notes-area textarea').forEach(ta => ta.value = '');
+            document.querySelectorAll('.schedule-table input[type="checkbox"]').forEach(cb => cb.checked = false);
+            saveProgress();
+        }
+
+        // ─── AUTO-RESIZE TEXTAREAS AND AUTO-SAVE ───
+        document.querySelectorAll('.notes-area textarea').forEach(ta => {
+            ta.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                saveProgress();
+            });
+        });
+
+        document.addEventListener('change', function(event) {
+            if (event.target.matches('.lesson-fields [data-field="term"]')) {
+                const row = event.target.closest('tr');
+                if (!row) return;
+                const week = row.querySelector('[data-field="week"]')?.value || '';
+                const activity = row.querySelector('[data-field="activity"]')?.value || '';
+                const values = { term: event.target.value, week, activity };
+                const subjectKey = row.querySelector('[data-subject-select]')?.value || '';
+                if (termIndependentSubjects.has(subjectKey)) {
+                    values.competency = row.querySelector('[data-field="competency"]')?.value || '';
+                }
+                refreshRowFields(row, values, true);
+                saveProgress();
+                return;
+            }
+            if (event.target.matches('.lesson-fields select')) {
+                updateFieldPreview(event.target);
+                saveProgress();
+            } else if (event.target.matches('.schedule-table input[type="checkbox"]')) {
+                saveProgress();
+            }
+        });
+
+        const restored = restoreProgress();
+        if (!restored) {
+            showDay('monday');
+        }
+        renderSummary();
+        renderSummaryPanel();
+    </script>
+
+</body>
+</html>
